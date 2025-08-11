@@ -8,6 +8,7 @@ import {
 } from 'fs';
 import { homedir } from 'os';
 import { join } from 'path';
+import TOML from '@iarna/toml';
 
 type LogType = 'info' | 'success' | 'error';
 type TargetName = 'claude' | 'codex' | 'gemini';
@@ -71,31 +72,7 @@ function loadMcpSettings(): McpSettings {
 }
 
 function convertToToml(mcpServers: Record<string, McpServer>): string {
-  let toml = '';
-
-  for (const [name, config] of Object.entries(mcpServers)) {
-    toml += `[mcp_servers.${name}]\n`;
-
-    if (config.command) {
-      toml += `command = "${config.command}"\n`;
-    }
-
-    if (config.args && Array.isArray(config.args)) {
-      const args = config.args.map((arg) => `"${arg}"`).join(', ');
-      toml += `args = [${args}]\n`;
-    }
-
-    if (config.env && typeof config.env === 'object') {
-      const env = Object.entries(config.env)
-        .map(([k, v]) => `"${k}" = "${v}"`)
-        .join(', ');
-      toml += `env = { ${env} }\n`;
-    }
-
-    toml += '\n';
-  }
-
-  return toml;
+  return TOML.stringify({ mcp_servers: mcpServers } as any);
 }
 
 function deployToTarget(target: TargetName, verbose: boolean = false): void {
