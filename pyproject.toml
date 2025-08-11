@@ -1,0 +1,19 @@
+[project]
+name = "vibe"
+version = "0.1.0"
+description = "MCP configuration deployment tools for Claude, Codex, and Gemini"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.scripts]
+vibe = "main:main"
+vibe-claude = "claude:main"
+vibe-codex = "codex:main"
+vibe-gemini = "gemini:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.1",
+    "ruff>=0.12.8",
+]
