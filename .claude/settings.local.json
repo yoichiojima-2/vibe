@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "Bash(chmod:*)",
+      "Bash(./codex.sh)",
+      "Bash(./codex.py)",
+      "Bash(./claude.py)",
+      "Bash(./gemini.py)",
+      "Bash(rm:*)",
+      "Bash(git add:*)",
+      "Bash(git push:*)",
+      "Bash(python:*)",
+      "Bash(ruff check:*)",
+      "Bash(pip install:*)",
+      "Bash(ruff format:*)",
+      "Bash(mkdir:*)",
+      "Bash(mv:*)",
+      "Bash(npm install)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run format:*)"
+    ],
+    "deny": []
+  }
+}

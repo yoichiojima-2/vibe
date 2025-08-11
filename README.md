@@ -1,33 +1,67 @@
 # Vibe
 
-AI coding environment deployment tools.
+Simple MCP configuration deployment for Claude, Codex, and Gemini.
 
 ## Purpose
 
-This repository manages the deployment of AI/MCP configurations to various AI coding assistants, creating the right "vibe" for AI-enhanced development.
+Streamlined deployment of MCP configurations to AI coding assistants. No complexity, just results.
 
-## Contents
+## Installation
 
-- `claude.py` - Deploy MCP settings to Claude Desktop
-- `gemini.py` - Deploy MCP settings to Gemini
-- `codex.py` - Deploy MCP settings to Codex CLI
+```bash
+# Install globally
+npm install -g .
+
+# Or run locally
+npm install
+npm run setup
+```
 
 ## Usage
 
+### Simple Commands
+
 ```bash
-# Deploy to Claude Desktop
-./claude.py
+# Deploy to specific targets
+npm run install:claude     # Deploy to Claude Desktop
+npm run install:codex      # Deploy to Codex CLI
+npm run install:gemini     # Deploy to Gemini
+npm run install:all        # Deploy to all targets
+```
 
-# Deploy to Gemini
-./gemini.py
+### Direct Scripts
 
-# Deploy to Codex CLI
-./codex.py
+```bash
+# Make scripts executable
+npm run setup
+
+# Run deployment scripts
+./bin/claude.js
+./bin/codex.js
+./bin/gemini.js
+./bin/vibe.js all
+```
+
+### CLI Usage
+
+```bash
+# Interactive mode
+vibe
+
+# Deploy to specific target
+vibe claude
+vibe codex
+vibe gemini
+vibe all
+
+# Verbose output
+vibe -v claude
 ```
 
 ## Configuration Source
 
 All MCP configurations are stored in the `dotfiles` repository:
+
 - `~/Developer/repo/dotfiles/mcp-settings.json`
 - `~/Developer/repo/dotfiles/claude-settings-local.json`
 

@@ -1,0 +1,2 @@
+- write them in javascript or typescript
+- refactor them. looks to me it is quite complecated for what it actually does

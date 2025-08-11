@@ -1,0 +1,47 @@
+{
+  "name": "vibe",
+  "version": "0.1.0",
+  "description": "Simple MCP configuration deployment for Claude, Codex, and Gemini",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "vibe": "./dist/bin/vibe.js",
+    "vibe-claude": "./dist/bin/claude.js",
+    "vibe-codex": "./dist/bin/codex.js",
+    "vibe-gemini": "./dist/bin/gemini.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "install:claude": "npm run build && node dist/bin/claude.js",
+    "install:codex": "npm run build && node dist/bin/codex.js",
+    "install:gemini": "npm run build && node dist/bin/gemini.js",
+    "install:all": "npm run build && node dist/bin/vibe.js all",
+    "deploy:claude": "npm run build && node dist/bin/claude.js",
+    "deploy:codex": "npm run build && node dist/bin/codex.js",
+    "deploy:gemini": "npm run build && node dist/bin/gemini.js",
+    "deploy:all": "npm run build && node dist/bin/vibe.js all",
+    "setup": "npm run build && chmod +x dist/bin/*.js",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "keywords": [
+    "ai",
+    "mcp",
+    "configuration",
+    "claude",
+    "codex",
+    "gemini"
+  ],
+  "author": "Vibe Contributors",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "prettier": "^3.0.0"
+  }
+}
