@@ -6,8 +6,10 @@ import {
   mkdirSync,
 } from 'fs';
 import { homedir } from 'os';
-import { join } from 'path';
+import { join, dirname } from 'path';
 import TOML, { JsonMap } from '@iarna/toml';
+import { config } from 'dotenv';
+import { expand } from 'dotenv-expand';
 
 type LogType = 'info' | 'success' | 'error';
 type TargetName = 'claude' | 'codex' | 'gemini';
@@ -26,6 +28,10 @@ const VIBE_DIR: string =
   process.env.VIBE_DIR || join(homedir(), 'Developer/repo/vibe');
 const MCP_SETTINGS: string = join(VIBE_DIR, 'mcp-settings.json');
 
+// Load and expand .env file from VIBE_DIR
+const envConfig = config({ path: join(VIBE_DIR, '.env') });
+expand(envConfig);
+
 const TARGETS: Record<TargetName, string> = {
   claude: join(
     homedir(),
@@ -41,10 +47,32 @@ function log(message: string, type: LogType = 'info'): void {
 }
 
 function ensureDir(filepath: string): void {
-  const dir = filepath.substring(0, filepath.lastIndexOf('/'));
+  const dir = dirname(filepath);
   if (!existsSync(dir)) {
     mkdirSync(dir, { recursive: true });
   }
+}
+
+function expandEnvVars(obj: any): any {
+  if (typeof obj === 'string') {
+    return obj.replace(/\$([A-Z_][A-Z0-9_]*)/g, (match, varName) => {
+      return process.env[varName] || match;
+    });
+  }
+  
+  if (Array.isArray(obj)) {
+    return obj.map(expandEnvVars);
+  }
+  
+  if (obj && typeof obj === 'object') {
+    const result: any = {};
+    for (const [key, value] of Object.entries(obj)) {
+      result[key] = expandEnvVars(value);
+    }
+    return result;
+  }
+  
+  return obj;
 }
 
 
@@ -89,13 +117,14 @@ function deployToTarget(target: TargetName, verbose: boolean = false): void {
     }
 
     const mcpData = loadMcpSettings();
+    const expandedMcpData = expandEnvVars(mcpData);
     ensureDir(targetPath);
 
     if (target === 'codex') {
-      const tomlContent = convertToToml(mcpData.mcpServers || {});
+      const tomlContent = convertToToml(expandedMcpData.mcpServers || {});
       writeFileSync(targetPath, tomlContent, 'utf8');
     } else {
-      writeFileSync(targetPath, JSON.stringify(mcpData, null, 2), 'utf8');
+      writeFileSync(targetPath, JSON.stringify(expandedMcpData, null, 2), 'utf8');
     }
 
     log(`Configuration deployed to ${target}`, 'success');

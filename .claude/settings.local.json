@@ -28,7 +28,8 @@
       "Bash(git commit:*)",
       "Bash(npx eslint:*)",
       "Bash(npm ls:*)",
-      "Bash(npm run install:all:*)"
+      "Bash(npm run install:all:*)",
+      "Bash(npm info:*)"
     ],
     "deny": []
   }
