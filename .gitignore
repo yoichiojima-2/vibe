@@ -33,3 +33,6 @@ claude-settings-local.json
 
 # Backup files
 *.backup.*
+
+# claude
+.claude
