@@ -61,14 +61,15 @@ const CLAUDE_CODE_BUILTIN_SERVERS = new Set([
   'git',
   'github',
   'brave-search',
-  'memory'
+  'memory',
 ]);
 
 function expandEnvVars<T>(obj: T): T {
   const expand = (value: unknown): unknown => {
     if (typeof value === 'string') {
-      return value.replace(/\$([A-Z_][A-Z0-9_]*)/g, (_, varName) => 
-        process.env[varName] || `$${varName}`
+      return value.replace(
+        /\$([A-Z_][A-Z0-9_]*)/g,
+        (_, varName) => process.env[varName] || `$${varName}`
       );
     }
     if (Array.isArray(value)) {
@@ -84,10 +85,15 @@ function expandEnvVars<T>(obj: T): T {
   return expand(obj) as T;
 }
 
-function filterServersForTarget(mcpServers: Record<string, McpServer>, target: TargetName): Record<string, McpServer> {
+function filterServersForTarget(
+  mcpServers: Record<string, McpServer>,
+  target: TargetName
+): Record<string, McpServer> {
   if (target === 'claude-code') {
     return Object.fromEntries(
-      Object.entries(mcpServers).filter(([key]) => !CLAUDE_CODE_BUILTIN_SERVERS.has(key))
+      Object.entries(mcpServers).filter(
+        ([key]) => !CLAUDE_CODE_BUILTIN_SERVERS.has(key)
+      )
     );
   }
   return mcpServers;
@@ -111,21 +117,24 @@ async function loadMcpSettings(): Promise<McpSettings> {
 function convertToToml(mcpServers: Record<string, McpServer>): string {
   const tomlObject: JsonMap = { mcp_servers: {} as JsonMap };
   const servers = tomlObject.mcp_servers as JsonMap;
-  
+
   for (const [key, server] of Object.entries(mcpServers)) {
     const serverObj: JsonMap = {};
-    
+
     if (server.command) serverObj.command = server.command;
     if (server.args) serverObj.args = server.args as string[];
     if (server.env) serverObj.env = server.env as JsonMap;
-    
+
     servers[key] = serverObj;
   }
-  
+
   return TOML.stringify(tomlObject);
 }
 
-async function deployToTarget(target: TargetName, verbose: boolean = false): Promise<void> {
+async function deployToTarget(
+  target: TargetName,
+  verbose: boolean = false
+): Promise<void> {
   try {
     if (verbose) log(`Deploying to ${target}...`);
 
@@ -136,22 +145,28 @@ async function deployToTarget(target: TargetName, verbose: boolean = false): Pro
 
     const mcpData = await loadMcpSettings();
     const expandedMcpData = expandEnvVars(mcpData);
-    const filteredMcpServers = filterServersForTarget(expandedMcpData.mcpServers || {}, target);
+    const filteredMcpServers = filterServersForTarget(
+      expandedMcpData.mcpServers || {},
+      target
+    );
     const finalMcpData = { ...expandedMcpData, mcpServers: filteredMcpServers };
-    
+
     await ensureDir(targetPath);
 
-    const content = target === 'codex' 
-      ? convertToToml(filteredMcpServers)
-      : JSON.stringify(finalMcpData, null, 2);
-    
+    const content =
+      target === 'codex'
+        ? convertToToml(filteredMcpServers)
+        : JSON.stringify(finalMcpData, null, 2);
+
     await writeFile(targetPath, content, 'utf8');
 
     log(`Configuration deployed to ${target}`, 'success');
     if (verbose) {
       log(`Location: ${targetPath}`);
       if (target === 'claude-code') {
-        const excludedCount = Object.keys(expandedMcpData.mcpServers || {}).length - Object.keys(filteredMcpServers).length;
+        const excludedCount =
+          Object.keys(expandedMcpData.mcpServers || {}).length -
+          Object.keys(filteredMcpServers).length;
         if (excludedCount > 0) {
           log(`Excluded ${excludedCount} built-in server(s) for Claude Code`);
         }
@@ -166,12 +181,12 @@ async function deployToTarget(target: TargetName, verbose: boolean = false): Pro
 
 async function deployAll(verbose: boolean = false): Promise<void> {
   const targets = Object.keys(TARGETS) as TargetName[];
-  await Promise.all(targets.map(target => deployToTarget(target, verbose)));
+  await Promise.all(targets.map((target) => deployToTarget(target, verbose)));
 }
 
 async function interactive(): Promise<void> {
   console.log('🎵 Vibe - MCP Configuration Deployment\n');
-  
+
   const { target } = await inquirer.prompt([
     {
       type: 'list',

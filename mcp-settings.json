@@ -23,27 +23,18 @@
     "playwright": {
       "type": "stdio",
       "command": "npx",
-      "args": [
-        "@playwright/mcp@latest"
-      ],
+      "args": ["@playwright/mcp@latest"],
       "env": {}
     },
     "puppeteer": {
       "type": "stdio",
       "command": "npx",
-      "args": [
-        "@modelcontextprotocol/server-puppeteer"
-      ],
+      "args": ["@modelcontextprotocol/server-puppeteer"],
       "env": {}
     },
     "shell": {
       "command": "docker",
-      "args": [
-        "run",
-        "--rm",
-        "-i",
-        "mcp-shell:latest"
-      ],
+      "args": ["run", "--rm", "-i", "mcp-shell:latest"],
       "env": {
         "MCP_SHELL_SECURITY_ENABLED": "true",
         "MCP_SHELL_LOG_LEVEL": "info"

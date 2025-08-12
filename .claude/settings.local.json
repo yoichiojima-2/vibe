@@ -29,7 +29,8 @@
       "Bash(npx eslint:*)",
       "Bash(npm ls:*)",
       "Bash(npm run install:all:*)",
-      "Bash(npm info:*)"
+      "Bash(npm info:*)",
+      "Bash(node:*)"
     ],
     "deny": []
   }
