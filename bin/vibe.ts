@@ -6,7 +6,7 @@ import {
   TARGETS,
 } from '../src/index.js';
 
-type TargetName = 'claude' | 'codex' | 'gemini';
+type TargetName = 'claude' | 'codex' | 'gemini' | 'claude-code';
 
 const args: string[] = process.argv.slice(2);
 const target: string | undefined = args[0];

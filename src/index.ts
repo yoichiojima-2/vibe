@@ -12,7 +12,7 @@ import { config } from 'dotenv';
 import { expand } from 'dotenv-expand';
 
 type LogType = 'info' | 'success' | 'error';
-type TargetName = 'claude' | 'codex' | 'gemini';
+type TargetName = 'claude' | 'codex' | 'gemini' | 'claude-code';
 
 interface McpServer {
   command?: string;
@@ -39,6 +39,7 @@ const TARGETS: Record<TargetName, string> = {
   ),
   codex: join(homedir(), '.codex/config.toml'),
   gemini: join(homedir(), '.gemini/settings.json'),
+  'claude-code': join(homedir(), '.claude-code/mcp_settings.json'),
 };
 
 function log(message: string, type: LogType = 'info'): void {
@@ -52,6 +53,15 @@ function ensureDir(filepath: string): void {
     mkdirSync(dir, { recursive: true });
   }
 }
+
+// Built-in servers that Claude Code already has
+const CLAUDE_CODE_BUILTIN_SERVERS = new Set([
+  'filesystem',
+  'git',
+  'github',
+  'brave-search',
+  'memory'
+]);
 
 function expandEnvVars(obj: any): any {
   if (typeof obj === 'string') {
@@ -73,6 +83,19 @@ function expandEnvVars(obj: any): any {
   }
   
   return obj;
+}
+
+function filterServersForTarget(mcpServers: Record<string, McpServer>, target: TargetName): Record<string, McpServer> {
+  if (target === 'claude-code') {
+    const filtered: Record<string, McpServer> = {};
+    for (const [key, value] of Object.entries(mcpServers)) {
+      if (!CLAUDE_CODE_BUILTIN_SERVERS.has(key)) {
+        filtered[key] = value;
+      }
+    }
+    return filtered;
+  }
+  return mcpServers;
 }
 
 
@@ -118,17 +141,26 @@ function deployToTarget(target: TargetName, verbose: boolean = false): void {
 
     const mcpData = loadMcpSettings();
     const expandedMcpData = expandEnvVars(mcpData);
+    const filteredMcpServers = filterServersForTarget(expandedMcpData.mcpServers || {}, target);
+    const finalMcpData = { ...expandedMcpData, mcpServers: filteredMcpServers };
+    
     ensureDir(targetPath);
 
     if (target === 'codex') {
-      const tomlContent = convertToToml(expandedMcpData.mcpServers || {});
+      const tomlContent = convertToToml(filteredMcpServers);
       writeFileSync(targetPath, tomlContent, 'utf8');
     } else {
-      writeFileSync(targetPath, JSON.stringify(expandedMcpData, null, 2), 'utf8');
+      writeFileSync(targetPath, JSON.stringify(finalMcpData, null, 2), 'utf8');
     }
 
     log(`Configuration deployed to ${target}`, 'success');
     if (verbose) log(`Location: ${targetPath}`);
+    if (target === 'claude-code' && verbose) {
+      const excludedCount = Object.keys(expandedMcpData.mcpServers || {}).length - Object.keys(filteredMcpServers).length;
+      if (excludedCount > 0) {
+        log(`Excluded ${excludedCount} built-in server(s) for Claude Code`);
+      }
+    }
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     log(`Failed to deploy to ${target}: ${errorMessage}`, 'error');
@@ -148,9 +180,10 @@ function interactive(): void {
   console.log('1. Claude Desktop');
   console.log('2. Codex CLI');
   console.log('3. Gemini');
-  console.log('4. All targets\n');
+  console.log('4. Claude Code');
+  console.log('5. All targets\n');
 
-  process.stdout.write('Enter your choice (1-4): ');
+  process.stdout.write('Enter your choice (1-5): ');
   process.stdin.setEncoding('utf8');
 
   process.stdin.on('readable', () => {
@@ -170,6 +203,9 @@ function interactive(): void {
           deployToTarget('gemini');
           break;
         case '4':
+          deployToTarget('claude-code');
+          break;
+        case '5':
           deployAll();
           break;
         default:

@@ -1,14 +1,15 @@
 {
   "name": "vibe",
   "version": "0.1.0",
-  "description": "Simple MCP configuration deployment for Claude, Codex, and Gemini",
+  "description": "Simple MCP configuration deployment for Claude, Codex, Gemini, and Claude Code",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
     "vibe": "./dist/bin/vibe.js",
     "vibe-claude": "./dist/bin/claude.js",
     "vibe-codex": "./dist/bin/codex.js",
-    "vibe-gemini": "./dist/bin/gemini.js"
+    "vibe-gemini": "./dist/bin/gemini.js",
+    "vibe-claude-code": "./dist/bin/claude-code.js"
   },
   "scripts": {
     "build": "tsc",
@@ -16,10 +17,12 @@
     "install:claude": "npm run build && node dist/bin/claude.js",
     "install:codex": "npm run build && node dist/bin/codex.js",
     "install:gemini": "npm run build && node dist/bin/gemini.js",
+    "install:claude-code": "npm run build && node dist/bin/claude-code.js",
     "install:all": "npm run build && node dist/bin/vibe.js all",
     "deploy:claude": "npm run build && node dist/bin/claude.js",
     "deploy:codex": "npm run build && node dist/bin/codex.js",
     "deploy:gemini": "npm run build && node dist/bin/gemini.js",
+    "deploy:claude-code": "npm run build && node dist/bin/claude-code.js",
     "deploy:all": "npm run build && node dist/bin/vibe.js all",
     "setup": "npm run build && chmod +x dist/bin/*.js",
     "format": "prettier --write .",
@@ -33,7 +36,8 @@
     "configuration",
     "claude",
     "codex",
-    "gemini"
+    "gemini",
+    "claude-code"
   ],
   "author": "Vibe Contributors",
   "license": "MIT",

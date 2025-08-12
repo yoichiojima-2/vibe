@@ -1,6 +1,6 @@
 # Vibe
 
-Simple MCP configuration deployment for Claude, Codex, and Gemini.
+Simple MCP configuration deployment for Claude, Codex, Gemini, and Claude Code.
 
 ## Purpose
 
@@ -23,10 +23,11 @@ npm run setup
 
 ```bash
 # Deploy to specific targets
-npm run install:claude     # Deploy to Claude Desktop
-npm run install:codex      # Deploy to Codex CLI
-npm run install:gemini     # Deploy to Gemini
-npm run install:all        # Deploy to all targets
+npm run install:claude      # Deploy to Claude Desktop
+npm run install:codex       # Deploy to Codex CLI
+npm run install:gemini      # Deploy to Gemini
+npm run install:claude-code # Deploy to Claude Code
+npm run install:all         # Deploy to all targets
 ```
 
 ### Direct Scripts
@@ -39,6 +40,7 @@ npm run setup
 ./bin/claude.js
 ./bin/codex.js
 ./bin/gemini.js
+./bin/claude-code.js
 ./bin/vibe.js all
 ```
 
@@ -52,10 +54,11 @@ vibe
 vibe claude
 vibe codex
 vibe gemini
+vibe claude-code
 vibe all
 
 # Verbose output
-vibe -v claude
+vibe -v claude-code
 ```
 
 ## Configuration Source
