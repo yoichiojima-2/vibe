@@ -4,7 +4,6 @@ import {
   writeFileSync,
   existsSync,
   mkdirSync,
-  copyFileSync,
 } from 'fs';
 import { homedir } from 'os';
 import { join } from 'path';
@@ -48,14 +47,6 @@ function ensureDir(filepath: string): void {
   }
 }
 
-function backup(filepath: string): void {
-  if (!existsSync(filepath)) return;
-
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  const backupPath = `${filepath}.backup.${timestamp}`;
-  copyFileSync(filepath, backupPath);
-  log(`Backed up to: ${backupPath}`, 'success');
-}
 
 function loadMcpSettings(): McpSettings {
   if (!existsSync(MCP_SETTINGS)) {
@@ -99,7 +90,6 @@ function deployToTarget(target: TargetName, verbose: boolean = false): void {
 
     const mcpData = loadMcpSettings();
     ensureDir(targetPath);
-    backup(targetPath);
 
     if (target === 'codex') {
       const tomlContent = convertToToml(mcpData.mcpServers || {});
