@@ -32,7 +32,8 @@
       "Bash(npm info:*)",
       "Bash(node:*)",
       "Bash(./dist/bin/vibe.js:*)",
-      "Bash(npm run deploy:claude-code:*)"
+      "Bash(npm run deploy:claude-code:*)",
+      "Bash(git restore:*)"
     ],
     "deny": []
   }
