@@ -17,12 +17,11 @@ Streamlined deployment of MCP configurations to AI coding assistants. No complex
 ## Installation
 
 ```bash
-# Install globally
-npm install -g .
-
-# Or run locally
+# Install dependencies
 npm install
-npm run setup
+
+# Build the project
+npm run build
 ```
 
 ## Usage
@@ -31,42 +30,28 @@ npm run setup
 
 ```bash
 # Deploy to specific targets
-npm run install:claude      # Deploy to Claude Desktop
-npm run install:codex       # Deploy to Codex CLI
-npm run install:gemini      # Deploy to Gemini
-npm run install:claude-code # Deploy to Claude Code
-npm run install:all         # Deploy to all targets
-```
-
-### Direct Scripts
-
-```bash
-# Make scripts executable
-npm run setup
-
-# Run deployment scripts
-./bin/claude.js
-./bin/codex.js
-./bin/gemini.js
-./bin/claude-code.js
-./bin/vibe.js all
+npm run deploy:claude-desktop # Deploy to Claude Desktop
+npm run deploy:codex          # Deploy to Codex CLI
+npm run deploy:gemini         # Deploy to Gemini
+npm run deploy:claude-code    # Deploy to Claude Code
+npm run deploy:all            # Deploy to all targets
 ```
 
 ### CLI Usage
 
 ```bash
 # Interactive mode
-vibe
+npm run deploy
 
 # Deploy to specific target
-vibe claude
-vibe codex
-vibe gemini
-vibe claude-code
-vibe all
+npm run deploy:claude-desktop
+npm run deploy:codex
+npm run deploy:gemini
+npm run deploy:claude-code
+npm run deploy:all
 
-# Verbose output
-vibe -v claude-code
+# Verbose output (after building)
+npm run build && node dist/bin/vibe.js claude-desktop -v
 ```
 
 ## Configuration Source
@@ -75,6 +60,19 @@ All MCP configurations are stored in the `dotfiles` repository:
 
 - `~/Developer/repo/dotfiles/mcp-settings.json`
 - `~/Developer/repo/dotfiles/claude-settings-local.json`
+
+## Development
+
+```bash
+# Development with watch mode
+npm run dev
+
+# Formatting
+npm run format
+
+# Linting
+npm run lint
+```
 
 ## Philosophy
 
