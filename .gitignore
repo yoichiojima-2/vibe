@@ -8,8 +8,12 @@ build/
 # TypeScript
 *.tsbuildinfo
 
+# ESLint
+.eslintcache
+
 # Runtime files
 *.log
+npm-debug.log*
 
 # IDE files
 .vscode/

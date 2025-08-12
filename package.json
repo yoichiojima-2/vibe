@@ -23,7 +23,9 @@
     "deploy:all": "npm run build && node dist/bin/vibe.js all",
     "setup": "npm run build && chmod +x dist/bin/*.js",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "lint": "eslint . --ext .ts,.js",
+    "lint:fix": "eslint . --ext .ts,.js --fix"
   },
   "keywords": [
     "ai",
@@ -38,10 +40,13 @@
   "engines": {
     "node": ">=16.0.0"
   },
-  "dependencies": {},
   "devDependencies": {
+    "@eslint/js": "^9.33.0",
     "@types/node": "^20.0.0",
-    "typescript": "^5.0.0",
-    "prettier": "^3.0.0"
+    "@typescript-eslint/eslint-plugin": "^8.39.0",
+    "@typescript-eslint/parser": "^8.39.0",
+    "eslint": "^9.33.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0"
   }
 }
