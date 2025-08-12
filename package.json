@@ -11,7 +11,7 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "deploy": "npm run build && node dist/bin/vibe.js",
-    "deploy:claude": "npm run build && node dist/bin/vibe.js claude",
+    "deploy:claude-desktop": "npm run build && node dist/bin/vibe.js claude-desktop",
     "deploy:codex": "npm run build && node dist/bin/vibe.js codex", 
     "deploy:gemini": "npm run build && node dist/bin/vibe.js gemini",
     "deploy:claude-code": "npm run build && node dist/bin/vibe.js claude-code",

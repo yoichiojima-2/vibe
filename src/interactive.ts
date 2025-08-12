@@ -11,7 +11,7 @@ export async function interactive(): Promise<void> {
       name: 'target',
       message: 'Choose a deployment target:',
       choices: [
-        { name: 'Claude Desktop', value: 'claude' },
+        { name: 'Claude Desktop', value: 'claude-desktop' },
         { name: 'Codex CLI', value: 'codex' },
         { name: 'Gemini', value: 'gemini' },
         { name: 'Claude Code', value: 'claude-code' },

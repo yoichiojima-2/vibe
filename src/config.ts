@@ -2,7 +2,7 @@ import { homedir } from 'os';
 import { join } from 'path';
 import { z } from 'zod';
 
-export type TargetName = 'claude' | 'codex' | 'gemini' | 'claude-code';
+export type TargetName = 'claude-desktop' | 'codex' | 'gemini' | 'claude-code';
 export type LogType = 'info' | 'success' | 'error';
 
 export const McpServerSchema = z.object({
@@ -24,7 +24,7 @@ export const VIBE_DIR: string =
 export const MCP_SETTINGS: string = join(VIBE_DIR, 'mcp-settings.json');
 
 export const TARGETS: Record<TargetName, string> = {
-  claude: join(
+  'claude-desktop': join(
     homedir(),
     'Library/Application Support/Claude/claude_desktop_config.json'
   ),
