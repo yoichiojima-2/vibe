@@ -6,12 +6,12 @@
       "args": [
         "-y",
         "@modelcontextprotocol/server-filesystem",
-        "~/Developer/repo"
+        "${REPOS_DIR}"
       ]
     },
     "o3-search": {
       "command": "node",
-      "args": ["/Users/yo/Developer/repo/o3-search-mcp/build/index.js"],
+      "args": ["${REPOS_DIR}/o3-search-mcp/build/index.js"],
       "env": {
         "OPENAI_API_KEY": "$OPENAI_API_KEY",
         "SEARCH_CONTEXT_SIZE": "medium",
@@ -38,6 +38,20 @@
       "env": {
         "MCP_SHELL_SECURITY_ENABLED": "true",
         "MCP_SHELL_LOG_LEVEL": "info"
+      }
+    },
+    "spotify": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "${REPOS_DIR}/spotify-mcp",
+        "run",
+        "spotify-mcp"
+      ],
+      "env": {
+        "SPOTIFY_CLIENT_ID": "$SPOTIFY_CLIENT_ID",
+        "SPOTIFY_CLIENT_SECRET": "$SPOTIFY_CLIENT_SECRET",
+        "SPOTIFY_REDIRECT_URI": "http://127.0.0.1:8080/callback"
       }
     }
   }
