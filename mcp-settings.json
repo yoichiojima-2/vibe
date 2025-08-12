@@ -11,7 +11,7 @@
     },
     "o3-search": {
       "command": "node",
-      "args": ["${REPOS_DIR}/mcp/o3-search-mcp/build/index.js"],
+      "args": ["${REPOS_DIR}/o3-search-mcp/build/index.js"],
       "env": {
         "OPENAI_API_KEY": "$OPENAI_API_KEY",
         "SEARCH_CONTEXT_SIZE": "medium",
@@ -44,7 +44,7 @@
       "command": "uv",
       "args": [
         "--directory",
-        "${REPOS_DIR}/mcp/spotify-mcp",
+        "${REPOS_DIR}/spotify-mcp",
         "run",
         "spotify-mcp"
       ],
