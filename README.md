@@ -6,6 +6,14 @@ Simple MCP configuration deployment for Claude, Codex, Gemini, and Claude Code.
 
 Streamlined deployment of MCP configurations to AI coding assistants. No complexity, just results.
 
+## Features
+
+- **Modern Node.js**: Built with ES modules, async/await, and TypeScript
+- **Type Safety**: Full Zod schema validation for configuration files
+- **Better UX**: Interactive CLI with `inquirer` for guided deployments
+- **Smart Filtering**: Automatically excludes built-in servers for Claude Code
+- **Environment Variables**: Full support for `.env` files and variable expansion
+
 ## Installation
 
 ```bash

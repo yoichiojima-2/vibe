@@ -2,4 +2,4 @@
 import { deployToTarget } from '../src/index.js';
 
 console.log('ℹ Claude Desktop MCP Configuration Deployment');
-deployToTarget('claude', true);
+deployToTarget('claude', true).catch(console.error);
