@@ -20,7 +20,15 @@
       "Bash(npx tsc:*)",
       "Bash(npm run build:*)",
       "Bash(npm run format:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run lint)",
+      "Bash(git pull:*)",
+      "Bash(git stash:*)",
+      "Bash(git commit:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npm ls:*)",
+      "Bash(npm run install:all:*)"
     ],
     "deny": []
   }

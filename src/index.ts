@@ -8,7 +8,7 @@ import {
 } from 'fs';
 import { homedir } from 'os';
 import { join } from 'path';
-import TOML from '@iarna/toml';
+import TOML, { JsonMap } from '@iarna/toml';
 
 type LogType = 'info' | 'success' | 'error';
 type TargetName = 'claude' | 'codex' | 'gemini';
@@ -23,9 +23,9 @@ interface McpSettings {
   mcpServers?: Record<string, McpServer>;
 }
 
-const DOTFILES_DIR: string =
-  process.env.DOTFILES_DIR || join(homedir(), 'Developer/repo/dotfiles');
-const MCP_SETTINGS: string = join(DOTFILES_DIR, 'mcp-settings.json');
+const VIBE_DIR: string =
+  process.env.VIBE_DIR || join(homedir(), 'Developer/repo/vibe');
+const MCP_SETTINGS: string = join(VIBE_DIR, 'mcp-settings.json');
 
 const TARGETS: Record<TargetName, string> = {
   claude: join(
@@ -72,7 +72,20 @@ function loadMcpSettings(): McpSettings {
 }
 
 function convertToToml(mcpServers: Record<string, McpServer>): string {
-  return TOML.stringify({ mcp_servers: mcpServers });
+  const tomlObject: JsonMap = { mcp_servers: {} as JsonMap };
+  const servers = tomlObject.mcp_servers as JsonMap;
+  
+  for (const [key, server] of Object.entries(mcpServers)) {
+    const serverObj: JsonMap = {};
+    
+    if (server.command) serverObj.command = server.command;
+    if (server.args) serverObj.args = server.args as string[];
+    if (server.env) serverObj.env = server.env as JsonMap;
+    
+    servers[key] = serverObj;
+  }
+  
+  return TOML.stringify(tomlObject);
 }
 
 function deployToTarget(target: TargetName, verbose: boolean = false): void {
