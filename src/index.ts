@@ -72,7 +72,7 @@ function loadMcpSettings(): McpSettings {
 }
 
 function convertToToml(mcpServers: Record<string, McpServer>): string {
-  return TOML.stringify({ mcp_servers: mcpServers } as any);
+  return TOML.stringify({ mcp_servers: mcpServers });
 }
 
 function deployToTarget(target: TargetName, verbose: boolean = false): void {
