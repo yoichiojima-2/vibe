@@ -9,6 +9,10 @@ export function log(message: string, type: LogType = 'info'): void {
   console.log(`${prefix} ${message}`);
 }
 
+export function extractErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
 export async function ensureDir(filepath: string): Promise<void> {
   const dir = dirname(filepath);
   if (!existsSync(dir)) {
@@ -16,17 +20,22 @@ export async function ensureDir(filepath: string): Promise<void> {
   }
 }
 
+const ENV_VAR_PATTERNS = {
+  braced: /\$\{([A-Z_][A-Z0-9_]*)\}/g,
+  unbraced: /\$([A-Z_][A-Z0-9_]*)/g,
+} as const;
+
 export function expandEnvVars<T>(obj: T): T {
   const expand = (value: unknown): unknown => {
     if (typeof value === 'string') {
       return value
         .replace(
-          /\$\{([A-Z_][A-Z0-9_]*)\}/g,
-          (_, varName) => process.env[varName] || `\${${varName}}`
+          ENV_VAR_PATTERNS.braced,
+          (_, varName) => process.env[varName] ?? `\${${varName}}`
         )
         .replace(
-          /\$([A-Z_][A-Z0-9_]*)/g,
-          (_, varName) => process.env[varName] || `$${varName}`
+          ENV_VAR_PATTERNS.unbraced,
+          (_, varName) => process.env[varName] ?? `$${varName}`
         );
     }
     if (Array.isArray(value)) {
