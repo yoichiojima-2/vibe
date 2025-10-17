@@ -35,9 +35,7 @@ function convertToToml(mcpServers: Record<string, McpServer>): string {
     mcp_servers: Object.fromEntries(
       Object.entries(mcpServers).map(([key, server]) => [
         key,
-        Object.fromEntries(
-          Object.entries(server).filter(([, value]) => value !== undefined)
-        ),
+        Object.fromEntries(Object.entries(server).filter(([, value]) => value !== undefined)),
       ])
     ),
   };
@@ -45,25 +43,16 @@ function convertToToml(mcpServers: Record<string, McpServer>): string {
   return TOML.stringify(tomlObject);
 }
 
-type FormatStrategy = (
-  mcpData: McpSettings,
-  filteredServers: Record<string, McpServer>
-) => string;
+type FormatStrategy = (mcpData: McpSettings, filteredServers: Record<string, McpServer>) => string;
 
 const FORMAT_STRATEGIES: Record<TargetName, FormatStrategy> = {
-  'claude-desktop': (mcpData, filteredServers) =>
-    JSON.stringify({ ...mcpData, mcpServers: filteredServers }, null, 2),
+  'claude-desktop': (mcpData, filteredServers) => JSON.stringify({ ...mcpData, mcpServers: filteredServers }, null, 2),
   codex: (_, filteredServers) => convertToToml(filteredServers),
-  gemini: (mcpData, filteredServers) =>
-    JSON.stringify({ ...mcpData, mcpServers: filteredServers }, null, 2),
-  'claude-code': (mcpData, filteredServers) =>
-    JSON.stringify({ ...mcpData, mcpServers: filteredServers }, null, 2),
+  gemini: (mcpData, filteredServers) => JSON.stringify({ ...mcpData, mcpServers: filteredServers }, null, 2),
+  'claude-code': (mcpData, filteredServers) => JSON.stringify({ ...mcpData, mcpServers: filteredServers }, null, 2),
 };
 
-export async function deployToTarget(
-  target: TargetName,
-  verbose: boolean = false
-): Promise<void> {
+export async function deployToTarget(target: TargetName, verbose: boolean = false): Promise<void> {
   try {
     if (verbose) log(`Deploying to ${target}...`);
 
@@ -74,10 +63,7 @@ export async function deployToTarget(
 
     const mcpData = await loadMcpSettings();
     const expandedMcpData = expandEnvVars(mcpData);
-    const filteredMcpServers = filterServersForTarget(
-      expandedMcpData.mcpServers || {},
-      target
-    );
+    const filteredMcpServers = filterServersForTarget(expandedMcpData.mcpServers || {}, target);
 
     await ensureDir(targetPath);
 
@@ -89,9 +75,7 @@ export async function deployToTarget(
     if (verbose) {
       log(`Location: ${targetPath}`);
       if (target === 'claude-code') {
-        const excludedCount =
-          Object.keys(expandedMcpData.mcpServers || {}).length -
-          Object.keys(filteredMcpServers).length;
+        const excludedCount = Object.keys(expandedMcpData.mcpServers || {}).length - Object.keys(filteredMcpServers).length;
         if (excludedCount > 0) {
           log(`Excluded ${excludedCount} built-in server(s) for Claude Code`);
         }

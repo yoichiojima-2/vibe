@@ -3,11 +3,7 @@
     "filesystem": {
       "type": "stdio",
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-filesystem",
-        "${REPOS_DIR}"
-      ]
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "${REPOS_DIR}"]
     },
     "o3-search": {
       "command": "node",
@@ -42,12 +38,7 @@
     },
     "spotify": {
       "command": "uv",
-      "args": [
-        "--directory",
-        "${REPOS_DIR}/spotify-mcp",
-        "run",
-        "spotify-mcp"
-      ],
+      "args": ["--directory", "${REPOS_DIR}/spotify-mcp", "run", "spotify-mcp"],
       "env": {
         "SPOTIFY_CLIENT_ID": "$SPOTIFY_CLIENT_ID",
         "SPOTIFY_CLIENT_SECRET": "$SPOTIFY_CLIENT_SECRET",

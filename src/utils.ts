@@ -29,38 +29,23 @@ export function expandEnvVars<T>(obj: T): T {
   const expand = (value: unknown): unknown => {
     if (typeof value === 'string') {
       return value
-        .replace(
-          ENV_VAR_PATTERNS.braced,
-          (_, varName) => process.env[varName] ?? `\${${varName}}`
-        )
-        .replace(
-          ENV_VAR_PATTERNS.unbraced,
-          (_, varName) => process.env[varName] ?? `$${varName}`
-        );
+        .replace(ENV_VAR_PATTERNS.braced, (_, varName) => process.env[varName] ?? `\${${varName}}`)
+        .replace(ENV_VAR_PATTERNS.unbraced, (_, varName) => process.env[varName] ?? `$${varName}`);
     }
     if (Array.isArray(value)) {
       return value.map(expand);
     }
     if (value && typeof value === 'object') {
-      return Object.fromEntries(
-        Object.entries(value).map(([k, v]) => [k, expand(v)])
-      );
+      return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, expand(v)]));
     }
     return value;
   };
   return expand(obj) as T;
 }
 
-export function filterServersForTarget(
-  mcpServers: Record<string, McpServer>,
-  target: TargetName
-): Record<string, McpServer> {
+export function filterServersForTarget(mcpServers: Record<string, McpServer>, target: TargetName): Record<string, McpServer> {
   if (target === 'claude-code') {
-    return Object.fromEntries(
-      Object.entries(mcpServers).filter(
-        ([key]) => !CLAUDE_CODE_BUILTIN_SERVERS.has(key)
-      )
-    );
+    return Object.fromEntries(Object.entries(mcpServers).filter(([key]) => !CLAUDE_CODE_BUILTIN_SERVERS.has(key)));
   }
   return mcpServers;
 }
