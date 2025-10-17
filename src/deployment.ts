@@ -6,11 +6,15 @@ import { config } from 'dotenv';
 import { expand } from 'dotenv-expand';
 import type { McpSettings, McpServer, TargetName } from './config.js';
 import { McpSettingsSchema, MCP_SETTINGS, TARGETS, VIBE_DIR } from './config.js';
-import { log, ensureDir, expandEnvVars, filterServersForTarget } from './utils.js';
+import { log, ensureDir, expandEnvVars, filterServersForTarget, extractErrorMessage } from './utils.js';
+
+function initializeEnv(): void {
+  const envConfig = config({ path: join(VIBE_DIR, '.env') });
+  expand(envConfig);
+}
 
 // Load and expand .env file from VIBE_DIR
-const envConfig = config({ path: join(VIBE_DIR, '.env') });
-expand(envConfig);
+initializeEnv();
 
 async function loadMcpSettings(): Promise<McpSettings> {
   if (!existsSync(MCP_SETTINGS)) {
@@ -22,27 +26,39 @@ async function loadMcpSettings(): Promise<McpSettings> {
     const parsed = JSON.parse(content);
     return McpSettingsSchema.parse(parsed);
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    throw new Error(`Failed to load MCP settings: ${errorMessage}`);
+    throw new Error(`Failed to load MCP settings: ${extractErrorMessage(error)}`);
   }
 }
 
 function convertToToml(mcpServers: Record<string, McpServer>): string {
-  const tomlObject: JsonMap = { mcp_servers: {} as JsonMap };
-  const servers = tomlObject.mcp_servers as JsonMap;
-
-  for (const [key, server] of Object.entries(mcpServers)) {
-    const serverObj: JsonMap = {};
-
-    if (server.command) serverObj.command = server.command;
-    if (server.args) serverObj.args = server.args as string[];
-    if (server.env) serverObj.env = server.env as JsonMap;
-
-    servers[key] = serverObj;
-  }
+  const tomlObject: JsonMap = {
+    mcp_servers: Object.fromEntries(
+      Object.entries(mcpServers).map(([key, server]) => [
+        key,
+        Object.fromEntries(
+          Object.entries(server).filter(([, value]) => value !== undefined)
+        ),
+      ])
+    ),
+  };
 
   return TOML.stringify(tomlObject);
 }
+
+type FormatStrategy = (
+  mcpData: McpSettings,
+  filteredServers: Record<string, McpServer>
+) => string;
+
+const FORMAT_STRATEGIES: Record<TargetName, FormatStrategy> = {
+  'claude-desktop': (mcpData, filteredServers) =>
+    JSON.stringify({ ...mcpData, mcpServers: filteredServers }, null, 2),
+  codex: (_, filteredServers) => convertToToml(filteredServers),
+  gemini: (mcpData, filteredServers) =>
+    JSON.stringify({ ...mcpData, mcpServers: filteredServers }, null, 2),
+  'claude-code': (mcpData, filteredServers) =>
+    JSON.stringify({ ...mcpData, mcpServers: filteredServers }, null, 2),
+};
 
 export async function deployToTarget(
   target: TargetName,
@@ -62,14 +78,10 @@ export async function deployToTarget(
       expandedMcpData.mcpServers || {},
       target
     );
-    const finalMcpData = { ...expandedMcpData, mcpServers: filteredMcpServers };
 
     await ensureDir(targetPath);
 
-    const content =
-      target === 'codex'
-        ? convertToToml(filteredMcpServers)
-        : JSON.stringify(finalMcpData, null, 2);
+    const content = FORMAT_STRATEGIES[target](expandedMcpData, filteredMcpServers);
 
     await writeFile(targetPath, content, 'utf8');
 
@@ -86,8 +98,7 @@ export async function deployToTarget(
       }
     }
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    log(`Failed to deploy to ${target}: ${errorMessage}`, 'error');
+    log(`Failed to deploy to ${target}: ${extractErrorMessage(error)}`, 'error');
     process.exit(1);
   }
 }
