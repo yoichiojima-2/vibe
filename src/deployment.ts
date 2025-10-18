@@ -6,7 +6,7 @@ import TOML, { JsonMap } from '@iarna/toml';
 import { config } from 'dotenv';
 import { expand } from 'dotenv-expand';
 import type { McpSettings, McpServer, TargetName } from './config.js';
-import { McpSettingsSchema, MCP_SETTINGS, TARGETS, VIBE_DIR } from './config.js';
+import { McpSettingsSchema, MCP_SETTINGS, TARGETS } from './config.js';
 import { log, ensureDir, expandEnvVars, filterServersForTarget, extractErrorMessage } from './utils.js';
 
 function initializeEnv(): void {
