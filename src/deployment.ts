@@ -1,6 +1,7 @@
 import { readFile, writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import { join } from 'path';
+import { homedir } from 'os';
 import TOML, { JsonMap } from '@iarna/toml';
 import { config } from 'dotenv';
 import { expand } from 'dotenv-expand';
@@ -9,7 +10,7 @@ import { McpSettingsSchema, MCP_SETTINGS, TARGETS, VIBE_DIR } from './config.js'
 import { log, ensureDir, expandEnvVars, filterServersForTarget, extractErrorMessage } from './utils.js';
 
 function initializeEnv(): void {
-  const envConfig = config({ path: join(VIBE_DIR, '.env') });
+  const envConfig = config({ path: join(homedir(), '.env') });
   expand(envConfig);
 }
 
