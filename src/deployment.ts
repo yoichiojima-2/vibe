@@ -48,8 +48,8 @@ type FormatStrategy = (mcpData: McpSettings, filteredServers: Record<string, Mcp
 
 const FORMAT_STRATEGIES: Record<TargetName, FormatStrategy> = {
   'claude-desktop': (mcpData, filteredServers) => JSON.stringify({ ...mcpData, mcpServers: filteredServers }, null, 2),
-  codex: (_, filteredServers) => convertToToml(filteredServers),
-  gemini: (mcpData, filteredServers) => JSON.stringify({ ...mcpData, mcpServers: filteredServers }, null, 2),
+  'codex': (_, filteredServers) => convertToToml(filteredServers),
+  'gemini': (mcpData, filteredServers) => JSON.stringify({ ...mcpData, mcpServers: filteredServers }, null, 2),
   'claude-code': (mcpData, filteredServers) => JSON.stringify({ ...mcpData, mcpServers: filteredServers }, null, 2),
 };
 
