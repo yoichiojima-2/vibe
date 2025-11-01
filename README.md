@@ -54,13 +54,6 @@ npm run deploy:all
 npm run build && node dist/bin/vibe.js claude-desktop -v
 ```
 
-## Configuration Source
-
-All MCP configurations are stored in the `dotfiles` repository:
-
-- `~/Developer/repo/dotfiles/mcp-settings.json`
-- `~/Developer/repo/dotfiles/claude-settings-local.json`
-
 ## Development
 
 ```bash
