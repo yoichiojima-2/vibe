@@ -50,8 +50,20 @@ const FORMAT_STRATEGIES: Record<TargetName, FormatStrategy> = {
   'claude-desktop': (mcpData, filteredServers) => JSON.stringify({ ...mcpData, mcpServers: filteredServers }, null, 2),
   'codex': (_, filteredServers) => convertToToml(filteredServers),
   'gemini': (mcpData, filteredServers) => JSON.stringify({ ...mcpData, mcpServers: filteredServers }, null, 2),
-  'claude-code': (mcpData, filteredServers) => JSON.stringify({ ...mcpData, mcpServers: filteredServers }, null, 2),
+  'claude-code': (_, filteredServers) => JSON.stringify({ mcpServers: filteredServers }, null, 2), // Only used for merge
 };
+
+async function loadExistingConfig(targetPath: string): Promise<Record<string, unknown>> {
+  if (!existsSync(targetPath)) {
+    return {};
+  }
+  try {
+    const content = await readFile(targetPath, 'utf8');
+    return JSON.parse(content);
+  } catch {
+    return {};
+  }
+}
 
 export async function deployToTarget(target: TargetName, verbose: boolean = false): Promise<void> {
   try {
@@ -68,7 +80,15 @@ export async function deployToTarget(target: TargetName, verbose: boolean = fals
 
     await ensureDir(targetPath);
 
-    const content = FORMAT_STRATEGIES[target](expandedMcpData, filteredMcpServers);
+    let content: string;
+    if (target === 'claude-code') {
+      // Merge mcpServers into existing .claude.json instead of overwriting
+      const existingConfig = await loadExistingConfig(targetPath);
+      existingConfig.mcpServers = filteredMcpServers;
+      content = JSON.stringify(existingConfig, null, 2);
+    } else {
+      content = FORMAT_STRATEGIES[target](expandedMcpData, filteredMcpServers);
+    }
 
     await writeFile(targetPath, content, 'utf8');
 

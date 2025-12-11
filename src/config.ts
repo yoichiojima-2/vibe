@@ -6,6 +6,7 @@ export type TargetName = 'claude-desktop' | 'codex' | 'gemini' | 'claude-code';
 export type LogType = 'info' | 'success' | 'error';
 
 export const McpServerSchema = z.object({
+  type: z.string().optional(),
   command: z.string().optional(),
   args: z.array(z.string()).optional(),
   env: z.record(z.string(), z.string()).optional(),
@@ -26,7 +27,7 @@ export const TARGETS: Record<TargetName, string> = {
   'claude-desktop': join(homedir(), 'Library/Application Support/Claude/claude_desktop_config.json'),
   codex: join(homedir(), '.codex/config.toml'),
   gemini: join(homedir(), '.gemini/settings.json'),
-  'claude-code': join(homedir(), '.claude-code/mcp_settings.json'),
+  'claude-code': join(homedir(), '.claude.json'),
 };
 
 export const CLAUDE_CODE_BUILTIN_SERVERS = new Set(['filesystem', 'git', 'github', 'brave-search', 'memory']);
