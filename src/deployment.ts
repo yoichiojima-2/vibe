@@ -14,7 +14,7 @@ function initializeEnv(): void {
   expand(envConfig);
 }
 
-// Load and expand .env file from VIBE_DIR
+// Load and expand ~/.env before reading MCP settings
 initializeEnv();
 
 async function loadMcpSettings(): Promise<McpSettings> {
